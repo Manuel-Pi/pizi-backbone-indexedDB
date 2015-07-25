@@ -1,6 +1,17 @@
-define(['backbone',
-	'pizi-indexedDB'],
-function(Backbone,
+(function (root, factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['backbone', 'pizi-indexedDB'], factory);
+    } else if (typeof module === 'object' && module.exports) {
+        // Node. Does not work with strict CommonJS, but
+        // only CommonJS-like environments that support module.exports,
+        // like Node.
+        module.exports = factory(require('backbone', 'pizi-indexedDB'));
+    } else {
+        // Browser globals (root is window)
+        root.returnExports = factory(backbone, piziIndexedDB);
+    }
+}(this, function(Backbone,
 	indexedDB){
 
 	var idsExtension = '-map';
@@ -169,4 +180,4 @@ function(Backbone,
 		getEntity : getEntity,
 		getAllEntity : getAllEntity
 	};
-});
+}));

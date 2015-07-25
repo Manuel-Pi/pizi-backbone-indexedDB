@@ -1,10 +1,10 @@
 {
-  "name": "pizi-backbone-localStorage",
-  "homepage": "https://github.com/Manuel-Pi/pizi-backbone-localStorage",
+  "name": "pizi-backbone-indexedDB",
+  "homepage": "https://github.com/Manuel-Pi/pizi-backbone-indexedDB",
   "main": "pizi-backbone-localStorage.js",
   "dependencies": {
     "backbone": ">=1.1.2",
-    "pizi-localStorage": "Manuel-Pi/pizi-localStorage"
+    "pizi-indexedDB": "Manuel-Pi/pizi-indexedDB"
   },
   "version": "0.0.1",
   "authors": "Manuel-Pi",
