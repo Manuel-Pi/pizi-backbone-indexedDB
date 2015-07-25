@@ -1,7 +1,7 @@
 {
   "name": "pizi-backbone-indexedDB",
   "homepage": "https://github.com/Manuel-Pi/pizi-backbone-indexedDB",
-  "main": "pizi-backbone-localStorage.js",
+  "main": "pizi-backbone-indexedDB.js",
   "dependencies": {
     "backbone": ">=1.1.2",
     "pizi-indexedDB": "Manuel-Pi/pizi-indexedDB"
