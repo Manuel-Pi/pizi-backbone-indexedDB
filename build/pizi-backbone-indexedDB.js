@@ -33,14 +33,14 @@
 
 	function saveEntity(model, options) {
 		if (model instanceof _Backbone["default"].Model) {
-			options.success = function (id) {
-				if (options.success) {
-					options.success({ id: id });
-				}
-			};
+			if (options.success) {
+				var success = options.success;
+				options.success = function (id) {
+					success({ id: id });
+				};
+			}
 			_piziIndexedDB2["default"].save(model.className, model.toJSON(), options);
 		} else {
-			console.log('Not Backbone Model!');
 			if (options && options.error) {
 				options.error();
 			}

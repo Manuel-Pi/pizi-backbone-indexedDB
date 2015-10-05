@@ -15,14 +15,14 @@ function getAllEntity(model, options){
 
 function saveEntity(model, options){
 	if(model instanceof Backbone.Model){
-		options.success = function(id){
-			if(options.success){
-				options.success({id: id});
-			}
-		};
+		if(options.success){
+			var success = options.success;
+			options.success = function(id){
+				success({id: id});
+			};
+		}
 		piziIndexedDB.save(model.className, model.toJSON(), options);
 	} else {
-		console.log('Not Backbone Model!');
 		if(options && options.error){
 			options.error();
 		}

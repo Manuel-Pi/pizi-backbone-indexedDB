@@ -59,7 +59,7 @@
 		function saveGetTest(){
 			QUnit.test( "Save and get Backbone model", function( assert ) {
 				var Model = global.Backbone.Model.extend({
-					className: "test"
+					className: "user"
 				});
 				var model = new Model({
 					foo: "foo",
@@ -75,17 +75,20 @@
 							success: function(){
 								assert.ok(model2.get('foo') === "foo" && model2.get('bar') === "bar", "model getted!");
 								var moduleDeleteDone = assert.async();
-								model2.destroy({
+								/*model2.destroy({
 									success: function(){
 										assert.ok(true, "Model deleted!");
 										moduleDeleteDone();
 									}
-								});
+								});*/
 								
 								moduleGetDone();
 							}
 						});
 						moduleSaveDone();
+					},
+					error: function(model, e){
+						console.log(e.message);
 					}
 				});
 			});
