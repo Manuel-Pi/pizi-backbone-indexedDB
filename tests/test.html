@@ -50,6 +50,9 @@
 						assert.ok(global.Backbone.defaultSync && global.Backbone.defaultSync !== global.Backbone.sync, "Backbone synch overrrided!");
 						saveGetTest();
 						applyDone();
+					},
+					error: function(e){
+						console.log(e);
 					}
 				});
 				storesLoadingDone();
@@ -75,12 +78,13 @@
 							success: function(){
 								assert.ok(model2.get('foo') === "foo" && model2.get('bar') === "bar", "model getted!");
 								var moduleDeleteDone = assert.async();
-								/*model2.destroy({
+								model2.destroy({
 									success: function(){
 										assert.ok(true, "Model deleted!");
 										moduleDeleteDone();
+										deleteDatabase();
 									}
-								});*/
+								});
 								
 								moduleGetDone();
 							}
@@ -92,6 +96,19 @@
 					}
 				});
 			});
+		}
+		
+		function deleteDatabase(){
+			var req = indexedDB.deleteDatabase(global.piziIndexedDB.conf.dbName);
+			req.onsuccess = function () {
+				console.log("Deleted database successfully");
+			};
+			req.onerror = function () {
+				console.log("Couldn't delete database");
+			};
+			req.onblocked = function () {
+				console.log("Couldn't delete database due to the operation being blocked");
+			};
 		}
   </script>
 </body>

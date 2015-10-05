@@ -21,49 +21,62 @@
 
 	var idsExtension = '-map';
 
-	function getAllEntity(model, options) {
+	function getAllEntity(model) {
+		var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
 		// Convert to Array for Backbone.Collection.set()
-		options.success = function (object) {
-			if (options.success) {
-				options.success([object]);
-			}
-		};
+		if (options.success) {
+			(function () {
+				var success = options.success;
+				options.success = function (object) {
+					success([object]);
+				};
+			})();
+		}
 		_piziIndexedDB2["default"].getAll(model.className || model.model.prototype.className, options);
 	}
 
-	function saveEntity(model, options) {
+	function saveEntity(model) {
+		var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
 		if (model instanceof _Backbone["default"].Model) {
 			if (options.success) {
-				var success = options.success;
-				options.success = function (id) {
-					success({ id: id });
-				};
+				(function () {
+					var success = options.success;
+					options.success = function (id) {
+						success({ id: id });
+					};
+				})();
 			}
 			_piziIndexedDB2["default"].save(model.className, model.toJSON(), options);
 		} else {
-			if (options && options.error) {
+			if (options.error) {
 				options.error();
 			}
 		}
 	}
 
-	function getEntity(model, options) {
+	function getEntity(model) {
+		var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
 		if (model.id) {
 			_piziIndexedDB2["default"].get(model.className, model.id, options);
 		} else {
 			console.log('Id not valid!');
-			if (options && options.error) {
+			if (options.error) {
 				options.error();
 			}
 		}
 	}
 
-	function deleteEntity(model, options) {
+	function deleteEntity(model) {
+		var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
+
 		if (model.id) {
 			_piziIndexedDB2["default"].remove(model.className, model.id, options);
 		} else {
 			console.log('Id not valid!');
-			if (options && options.error) {
+			if (options.error) {
 				options.error();
 			}
 		}
@@ -120,17 +133,21 @@
 		});
 	}
 
-	function initSession(opts) {
+	function initSession() {
+		var _this = this;
+
+		var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
+
 		var Session = _Backbone["default"].Model.extend({
 			className: 'session',
 			put: function put(key, value) {
 				if (value && value.toJSON) {
 					value = value.toJSON();
 				}
-				this.set(key, value);
+				_this.set(key, value);
 			},
 			pick: function pick(key) {
-				return this.get(key);
+				return _this.get(key);
 			}
 		});
 
@@ -163,11 +180,13 @@
 					opts.success();
 				}
 			},
-			error: function error() {
+			error: function error(model, err) {
 				createSesssion();
 				autoSaveSession();
-				if (opts.error) {
-					opts.error();
+				if (err.name === "ModelNotFound") {
+					opts.success();
+				} else if (opts.error) {
+					opts.error(err);
 				}
 			}
 		});

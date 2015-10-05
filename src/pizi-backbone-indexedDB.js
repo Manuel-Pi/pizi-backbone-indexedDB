@@ -3,49 +3,50 @@ import piziIndexedDB from "pizi-indexedDB";
 
 var idsExtension = '-map';
 
-function getAllEntity(model, options){
+function getAllEntity(model, options = {}){
 	// Convert to Array for Backbone.Collection.set()
-	options.success = function(object){
-		if(options.success){
-			options.success([object]);
-		}
-	};
+	if(options.success){
+		let success = options.success;
+		options.success = (object) => {
+			success([object]);
+		};
+	}
 	piziIndexedDB.getAll(model.className || model.model.prototype.className, options);
 }
 
-function saveEntity(model, options){
+function saveEntity(model, options = {}){
 	if(model instanceof Backbone.Model){
 		if(options.success){
-			var success = options.success;
-			options.success = function(id){
+			let success = options.success;
+			options.success = (id) =>{
 				success({id: id});
 			};
 		}
 		piziIndexedDB.save(model.className, model.toJSON(), options);
 	} else {
-		if(options && options.error){
+		if(options.error){
 			options.error();
 		}
 	}
 }
 
-function getEntity(model, options){
+function getEntity(model, options = {}){
 	if(model.id){
 		piziIndexedDB.get(model.className, model.id, options);
 	} else {
 		console.log('Id not valid!');
-		if(options && options.error){
+		if(options.error){
 			options.error();
 		}
 	}
 }
 
-function deleteEntity(model, options){
+function deleteEntity(model, options = {}){
 	if(model.id){
 		piziIndexedDB.remove(model.className, model.id, options);
 	} else {
 		console.log('Id not valid!');
-		if(options && options.error){
+		if(options.error){
 			options.error();
 		}
 	}
@@ -56,10 +57,10 @@ function overrideBackboneSync(opts = {}){
 	piziIndexedDB.open({
 		dbName: opts.dbName,
 		dbVersion: opts.dbVersion,
-		success : function(){
+		success : ()=>{
 			if(Backbone){
 				Backbone.defaultSync = Backbone.sync;
-				Backbone.sync = function(method, model, options = {}) {
+				Backbone.sync = (method, model, options = {})=>{
 
 					options.dbName = options.dbName || model.dbName;
 					options.dbVersion = options.dbVersion || model.dbVersion;
@@ -99,37 +100,37 @@ function overrideBackboneSync(opts = {}){
 	});
 }
 
-function initSession(opts){
-	var Session = Backbone.Model.extend({
+function initSession(opts = {}){
+	let Session = Backbone.Model.extend({
 		className : 'session',
-		put : function(key, value){
+		put : (key, value)=>{
 			if(value && value.toJSON){
 				value = value.toJSON();
 			}
 			this.set(key, value);
 		},
-		pick : function(key){
+		pick : (key)=>{
 			return this.get(key);
 		}
 	});
 
-	var createSesssion = function(){
+	let createSesssion = ()=>{
 		Backbone.session = new Session({id: 1, date: new Date()});
 		Backbone.session.save();
 	};
 
-	var autoSaveSession = function(){
-		Backbone.session.on('change', function(){
+	let autoSaveSession = ()=>{
+		Backbone.session.on('change', ()=>{
 			Backbone.session.set('date', new Date(), {silent: true});
 			Backbone.session.save();
 		});
 	};
 
-	var oldSession = new Session({id: 1});
-	var oldSessionDate = oldSession.get('date');
+	let oldSession = new Session({id: 1});
+	let oldSessionDate = oldSession.get('date');
 
 	oldSession.fetch({
-		success : function(){
+		success : ()=>{
 			if(oldSessionDate instanceof Date && (new Date()).getTime() - oldSessionDate.getTime() < 3600 * 1000 ){
 				console.log('Old session getted!' + oldSession.get('date'));
 				oldSession.set('date', new Date());
@@ -142,11 +143,13 @@ function initSession(opts){
 				opts.success();
 			}
 		},
-		error: function(){
+		error: (model, err)=>{
 			createSesssion();
 			autoSaveSession();
-			if(opts.error){
-				opts.error();
+			if(err.name === "ModelNotFound"){
+				opts.success();
+			} else if(opts.error){
+				opts.error(err);
 			}
 		}
 	});
