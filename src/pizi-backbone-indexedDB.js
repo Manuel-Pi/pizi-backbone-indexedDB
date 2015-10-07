@@ -1,8 +1,6 @@
 import Backbone from "backbone";
 import piziIndexedDB from "pizi-indexedDB";
 
-var idsExtension = '-map';
-
 function getAllEntity(model, options = {}){
 	// Convert to Array for Backbone.Collection.set()
 	if(options.success){

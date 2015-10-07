@@ -19,8 +19,6 @@
 
 	var _piziIndexedDB2 = _interopRequireDefault(_piziIndexedDB);
 
-	var idsExtension = '-map';
-
 	function getAllEntity(model) {
 		var options = arguments.length <= 1 || arguments[1] === undefined ? {} : arguments[1];
 
