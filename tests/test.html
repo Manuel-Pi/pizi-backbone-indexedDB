@@ -21,13 +21,14 @@
 			assert.ok( global.piziBackboneIndexedDB.apply, "Apply function available!" );
 			assert.ok( global.piziBackboneIndexedDB.disable, "Disable function available!" );
 		});
+		
 		/*
 	  	QUnit.test( "AMD module declaration", function( assert ) {
 		 	var requireLoadingDone = assert.async();
 			$.getScript("//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.20/require.min.js", function(){
 				assert.ok(define, "RequireJs is loaded!");
 				var moduleLoadingDone = assert.async();
-				require(['pizi-backbone-localStorage'], function(piziBackboneLocalStorage){
+				require(['pizi-backbone-indexedDB'], function(piziBackboneLocalStorage){
 					assert.ok(piziBackboneLocalStorage, "Module is defined!");
 					assert.ok(piziBackboneLocalStorage.apply, "Apply function available!");
 					assert.ok(piziBackboneLocalStorage.disable, "Disable function available!");
@@ -36,7 +37,7 @@
 				requireLoadingDone();
 			});
 	  	});
-		  */
+		*/
 		
 		QUnit.test( "Override Backbone.sync", function( assert ) {
 			var storesLoadingDone = assert.async();
