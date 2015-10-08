@@ -51,7 +51,6 @@ function deleteEntity(model, options = {}){
 }
 
 function overrideBackboneSync(opts = {}){
-	piziIndexedDB.conf = opts.conf;
 	piziIndexedDB.open({
 		dbName: opts.dbName,
 		dbVersion: opts.dbVersion,

@@ -83,7 +83,6 @@
 	function overrideBackboneSync() {
 		var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
-		_piziIndexedDB2["default"].conf = opts.conf;
 		_piziIndexedDB2["default"].open({
 			dbName: opts.dbName,
 			dbVersion: opts.dbVersion,
