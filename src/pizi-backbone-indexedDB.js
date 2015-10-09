@@ -54,6 +54,7 @@ function overrideBackboneSync(opts = {}){
 	piziIndexedDB.open({
 		dbName: opts.dbName,
 		dbVersion: opts.dbVersion,
+		conf: opts.conf,
 		success : ()=>{
 			if(Backbone){
 				Backbone.defaultSync = Backbone.sync;
@@ -100,13 +101,13 @@ function overrideBackboneSync(opts = {}){
 function initSession(opts = {}){
 	let Session = Backbone.Model.extend({
 		className : 'session',
-		put : (key, value)=>{
+		put(key, value){
 			if(value && value.toJSON){
 				value = value.toJSON();
 			}
 			this.set(key, value);
 		},
-		pick : (key)=>{
+		pick(key){
 			return this.get(key);
 		}
 	});
@@ -127,7 +128,7 @@ function initSession(opts = {}){
 	let oldSessionDate = oldSession.get('date');
 
 	oldSession.fetch({
-		success : ()=>{
+		success(){
 			if(oldSessionDate instanceof Date && (new Date()).getTime() - oldSessionDate.getTime() < 3600 * 1000 ){
 				console.log('Old session getted!' + oldSession.get('date'));
 				oldSession.set('date', new Date());
@@ -140,7 +141,7 @@ function initSession(opts = {}){
 				opts.success();
 			}
 		},
-		error: (model, err)=>{
+		error(model, err){
 			createSesssion();
 			autoSaveSession();
 			if(err.name === "ModelNotFound"){

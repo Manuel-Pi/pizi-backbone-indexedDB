@@ -86,6 +86,7 @@
 		_piziIndexedDB2["default"].open({
 			dbName: opts.dbName,
 			dbVersion: opts.dbVersion,
+			conf: opts.conf,
 			success: function success() {
 				if (_Backbone["default"]) {
 					_Backbone["default"].defaultSync = _Backbone["default"].sync;
@@ -131,8 +132,6 @@
 	}
 
 	function initSession() {
-		var _this = this;
-
 		var opts = arguments.length <= 0 || arguments[0] === undefined ? {} : arguments[0];
 
 		var Session = _Backbone["default"].Model.extend({
@@ -141,10 +140,10 @@
 				if (value && value.toJSON) {
 					value = value.toJSON();
 				}
-				_this.set(key, value);
+				this.set(key, value);
 			},
 			pick: function pick(key) {
-				return _this.get(key);
+				return this.get(key);
 			}
 		});
 
