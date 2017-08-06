@@ -1,23 +1,23 @@
 {
-	"dbName": "testDB",
-	"dbVersion": "1",
-	"stores": {
-		"1": {
-			"user" : {
-				"keyPath": "login",
-				"autoIncrement": true,
-				"indexes": []
-			},
-			"transaction" : {
-				"keyPath": "id",
-				"autoIncrement": true,
-				"indexes" : []
-			},
-			"session" : {
-				"keyPath" : "id",
-				"autoIncrement": true,
-				"indexes" : []
-			}
-		}
-	}
+    "dbName": "testDB",
+    "dbVersion": "1",
+    "stores": {
+        "1": {
+            "User": {
+                "keyPath": "login",
+                "autoIncrement": true,
+                "indexes": []
+            },
+            "Transaction": {
+                "keyPath": "id",
+                "autoIncrement": true,
+                "indexes": []
+            },
+            "Session": {
+                "keyPath": "id",
+                "autoIncrement": true,
+                "indexes": []
+            }
+        }
+    }
 }

@@ -1,116 +1,100 @@
 <html>
+
 <head>
-  <meta charset="utf-8">
-  <title>pizi-backbone-indexedDB test</title>
-  <link rel="stylesheet" href="//code.jquery.com/qunit/qunit-1.18.0.css">
+    <meta charset="utf-8">
+    <title>pizi-backbone-indexedDB test</title>
+    <link rel="stylesheet" href="//code.jquery.com/qunit/qunit-1.18.0.css">
 </head>
+
 <body>
-  <div id="qunit"></div>
-  <div id="qunit-fixture"></div>
-  <script src="//code.jquery.com/jquery-2.1.4.js"></script>
-  <script src="//code.jquery.com/qunit/qunit-1.18.0.js"></script>
-  <script src="underscore.js"></script>
-  <script src="jquery.js"></script>
-  <script src="backbone.js"></script>
-  <script src="pizi-indexedDB.js"></script>
-  <script src="pizi-backbone-indexedDB.js"></script>
-  <script>
-	  	var global = this;
-		QUnit.test( "Root module declaration", function( assert ) {
-			assert.ok( global.piziBackboneIndexedDB, "Module initialized!" );
-			assert.ok( global.piziBackboneIndexedDB.apply, "Apply function available!" );
-			assert.ok( global.piziBackboneIndexedDB.disable, "Disable function available!" );
-		});
-		
-		/*
-	  	QUnit.test( "AMD module declaration", function( assert ) {
-		 	var requireLoadingDone = assert.async();
-			$.getScript("//cdnjs.cloudflare.com/ajax/libs/require.js/2.1.20/require.min.js", function(){
-				assert.ok(define, "RequireJs is loaded!");
-				var moduleLoadingDone = assert.async();
-				require(['pizi-backbone-indexedDB'], function(piziBackboneLocalStorage){
-					assert.ok(piziBackboneLocalStorage, "Module is defined!");
-					assert.ok(piziBackboneLocalStorage.apply, "Apply function available!");
-					assert.ok(piziBackboneLocalStorage.disable, "Disable function available!");
-					moduleLoadingDone();
-				});
-				requireLoadingDone();
-			});
-	  	});
-		*/
-		
-		QUnit.test( "Override Backbone.sync", function( assert ) {
-			var storesLoadingDone = assert.async();
-			$.getJSON("pizi-indexedDBStores.json", function(json) {
-				assert.ok(json, "Store.json file loaded!");
-				var applyDone = assert.async();
-				global.piziBackboneIndexedDB.apply({
-					conf: json,
-					session: true,
-					success: function(){
-						assert.ok(global.Backbone.defaultSync && global.Backbone.defaultSync !== global.Backbone.sync, "Backbone synch overrrided!");
-						saveGetTest();
-						applyDone();
-					},
-					error: function(e){
-						console.log(e);
-					}
-				});
-				storesLoadingDone();
-			});
-		});
-		
-		function saveGetTest(){
-			QUnit.test( "Save and get Backbone model", function( assert ) {
-				var Model = global.Backbone.Model.extend({
-					className: "user"
-				});
-				var model = new Model({
-					foo: "foo",
-					bar: "bar"
-				});
-				var moduleSaveDone = assert.async();
-				model.save({}, {
-					success: function(model){
-						assert.ok(true, "model saved!");
-						var model2 = new Model({id: model.id});
-						var moduleGetDone = assert.async();
-						model2.fetch({
-							success: function(){
-								assert.ok(model2.get('foo') === "foo" && model2.get('bar') === "bar", "model getted!");
-								var moduleDeleteDone = assert.async();
-								model2.destroy({
-									success: function(){
-										assert.ok(true, "Model deleted!");
-										moduleDeleteDone();
-										deleteDatabase();
-									}
-								});
-								
-								moduleGetDone();
-							}
-						});
-						moduleSaveDone();
-					},
-					error: function(model, e){
-						console.log(e.message);
-					}
-				});
-			});
-		}
-		
-		function deleteDatabase(){
-			var req = indexedDB.deleteDatabase("testDB");
-			req.onsuccess = function () {
-				console.log("Deleted database successfully");
-			};
-			req.onerror = function () {
-				console.log("Couldn't delete database");
-			};
-			req.onblocked = function () {
-				console.log("Couldn't delete database due to the operation being blocked");
-			};
-		}
-  </script>
+    <div id="qunit"></div>
+    <div id="qunit-fixture"></div>
+    <script src="//code.jquery.com/jquery-2.1.4.js"></script>
+    <script src="//code.jquery.com/qunit/qunit-1.18.0.js"></script>
+    <script src="pizi-backbone-indexedDB.js"></script>
+    <script>
+        var global = this;
+        QUnit.test("Root module declaration", function(assert) {
+            assert.ok(global.piziBackboneIndexedDB, "Module initialized!");
+        });
+
+        QUnit.test("Override Backbone.sync", function(assert) {
+            var storesLoadingDone = assert.async();
+            assert.ok(config, "Store.json file loaded!");
+            var applyDone = assert.async();
+            global.piziBackboneIndexedDB.apply({
+                conf: config,
+                session: true,
+                success: function(session) {
+                    global.session = session;
+                    saveGetTest();
+                    assert.ok(true, "Backbone synch overrrided!");
+                    assert.ok(session, "Session created!");
+                    applyDone();
+                },
+                error: function(e) {
+                    console.log(e);
+                }
+            });
+            storesLoadingDone();
+        });
+
+        function saveGetTest() {
+            QUnit.test("Save and get Backbone model", function(assert) {
+                var Model = global.Backbone.Model.extend({
+                    className: "User",
+                    storage: "indexedDB"
+                });
+                var model = new Model({
+                    foo: "foo",
+                    bar: "bar"
+                });
+                var moduleSaveDone = assert.async();
+                model.save({}, {
+                    success: function(model) {
+                        assert.ok(true, "model saved!");
+                        var model2 = new Model({
+                            id: model.id
+                        });
+                        var moduleGetDone = assert.async();
+                        model2.fetch({
+                            success: function() {
+                                assert.ok(model2.get('foo') === "foo" && model2.get('bar') === "bar", "model getted!");
+                                var moduleDeleteDone = assert.async();
+                                model2.destroy({
+                                    success: function() {
+                                        assert.ok(true, "Model deleted!");
+                                        moduleDeleteDone();
+                                        deleteDatabase();
+                                    }
+                                });
+                                moduleGetDone();
+                            }
+                        });
+                        moduleSaveDone();
+                    },
+                    error: function(model, e) {
+                        console.log(e.message);
+                    }
+                });
+            });
+        }
+
+        function deleteDatabase() {
+            setTimeout(function() {
+                var req = indexedDB.deleteDatabase("testDB");
+                req.onsuccess = function() {
+                    console.log("Deleted database successfully");
+                };
+                req.onerror = function() {
+                    console.log("Couldn't delete database");
+                };
+                req.onblocked = function() {
+                    console.log("Couldn't delete database due to the operation being blocked");
+                };
+            }, 2000);
+        }
+    </script>
 </body>
+
 </html>
